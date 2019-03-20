@@ -2,6 +2,7 @@ package com.example.copsbot.user.web;
 
 
 import com.example.copsbot.user.User;
+import com.example.copsbot.user.UserDto;
 import com.example.copsbot.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,28 +23,25 @@ public class UserRestController {
     }
 
     @GetMapping("/me")
-    public User currentUser() {
-        // TODO: return UserDto here
+    public UserDto currentUser() {
         // TODO: pass in user details in order to authenticate
 
-        // For now just create a user and return it
-
-        User someNewUser = userService.createOfficer("someemail", "somepass");
+        // For now just create a user and return it... very temporary implementation
+        User someNewUser = userService.createOfficer("alex.foley@beverly-hills.com", "my-secret-pwd");
         Optional<User> userReturned = userService.getUser(someNewUser.getId());
-        return userReturned.orElse(null); // For now
+        return new UserDto(userReturned.orElse(null)); // For now
 
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public User createOfficer(@Valid @RequestBody CreateOfficerParameters parameters) {
-        // TODO: return UserDto
+    public UserDto createOfficer(@Valid @RequestBody CreateOfficerParameters parameters) {
 
         // Note: request mapping is not on this method, so it defaults to the class' @RequestMapping
 
         User officer = userService.createOfficer(parameters.getEmail(), parameters.getPassword());
 
-        return officer;
+        return new UserDto(officer);
 
     }
 
